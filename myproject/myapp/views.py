@@ -1,27 +1,18 @@
 from django.http import HttpResponse
+from django.template import loader
 from myapp.models import User
 
 
 # Create your views here.
 
 def hello(request):
-    html = "<p>Hello world, my name is Carl and Thien chi is my boss</p>"
-    return HttpResponse(html)
+    template = loader.get_template('hello.html')
+    context = {'name': 'Thien chi'}
+    return HttpResponse(template.render(context))
 
 
 def users(request):
+    template = loader.get_template('users.html')
     users_list = User.objects.all()
-    html_user_list = """
-        <table><thead><tr>
-            <th>Id</th>
-            <th>Prénom</th>
-            <th>Nom</th>
-        </tr></thead><tbody>"""
-    for user in users_list:
-        html_user_list += f"""<tr>
-            <td>{user.id}</td>
-            <td>{user.first_name}</td>
-            <td>{user.last_name}</td>
-        </tr>"""
-    html_user_list += "</tbody></table>"
-    return HttpResponse(html_user_list)
+    context = users_list
+    return HttpResponse(template.render({"users": context}))
